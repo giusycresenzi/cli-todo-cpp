@@ -1,26 +1,40 @@
 #include "../include/todo.h"
 #include <fstream>
 
+// it is a C++ program that provides a simple command-line interface for managing a todo list.
+// It allows users to add, delete, mark tasks as done, search for tasks, filter tasks, and sort tasks.
+
 using namespace std;
 
 vector<string> loadTasks(const string& filename) {
     vector<string> tasks;
-    ifstream file(filename);
+    int count_lines = 0;
+    // Open the file in read mode
+    ifstream file(filename); // input file stream
     if (file.is_open()) {
         string line;
         while (getline(file, line)) {
             tasks.push_back(line);
+            count_lines++;
         }
         file.close();
     } else {
-        cerr << "Error: Unable to open file " << filename << endl;
+        cerr << "Error: Unable to open this file " << filename << endl;
+    }
+    // Check how many tasks were loaded
+    if (tasks.empty()) {
+        cout << "No tasks found in the file." << endl;
+    } else {
+        cout << "Loaded " << count_lines << " tasks from the file." << endl;
     }
     return tasks;
 }
+
 void saveTasks(const string& filename, const vector<string>& tasks) {
-    ofstream file(filename);
+    ofstream file(filename); // output file stream
+    // Open the file in write mode
     if (file.is_open()) {
-        for (const auto& task : tasks) {
+        for (const string& task : tasks) { // could use auto instead of string
             file << task << endl;
         }
         file.close();
@@ -92,7 +106,7 @@ void displayHelp() {
 void displayAbout() {
     cout << "Todo List Application" << endl;
     cout << "Version 1.0" << endl;
-    cout << "Author: Your Name" << endl;
+    cout << "Author: Giuseppe Crescenzi" << endl;
     cout << "Description: A simple command-line todo list application." << endl;
 }
 // this code is intended to be the implementation of a todo.h file, won't work on its own
