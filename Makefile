@@ -1,14 +1,21 @@
-CC = g++
-CFLAGS = -std=c++11 -Wall
-SRC = src/main.cpp
-OBJ = main.o
-EXEC = todo
+cmake_minimum_required(VERSION 3.10)
 
-$(EXEC): $(OBJ)
-    $(CC) $(OBJ) -o $(EXEC)
+# Project name
+project(cli_todo_cpp)
 
-main.o: $(SRC)
-    $(CC) $(CFLAGS) -c $(SRC)
+# Set the C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-clean:
-    rm -f $(OBJ) $(EXEC)
+# Include directories
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
+# Add the executable
+add_executable(cli_todo_cpp src/main.cpp)
+
+# Link the data directory
+add_custom_command(
+    TARGET cli_todo_cpp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/data $<TARGET_FILE_DIR:cli_todo_cpp>/data
+)

@@ -19,7 +19,7 @@ public:
     ~CommandHandler();
 
     // default "help" so that it explains the commands by default
-    void handleCommands(const std::string& command = "help", std::vector<std::string> tasks, std::string filename = "todo.txt");
+    void run(const std::string& command = "help", std::vector<std::string> tasks, std::string filename = "todo.txt");
 
 private:
     std::vector<std::string> tasks_vector; // we will be using this to store and manipulate the tasks

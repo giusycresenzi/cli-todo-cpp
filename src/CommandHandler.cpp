@@ -11,7 +11,7 @@ CommandHandler::~CommandHandler() {
     cout << "Tasks saved to " << filename << endl;
 }
 
-void CommandHandler::handleCommands(const string& command, vector<string> tasks, string filename) {
+void CommandHandler::run(const string& command, vector<string> tasks, string filename) {
     string inputCommand = command;
     while (inputCommand != "exit") {
         if (inputCommand == "help") {
