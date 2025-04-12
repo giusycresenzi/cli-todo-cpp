@@ -6,7 +6,7 @@ int main() {
     std::cout << "Welcome to the CLI Todo App!" << std::endl;
 
     CommandHandler commandHandler;
-    commandHandler.run();
+    commandHandler.run("help");
 
     return 0;
 }

@@ -18,8 +18,21 @@ public:
     // Destructor
     ~CommandHandler();
 
-    // default "help" so that it explains the commands by default
-    void run(const std::string& command = "help", std::vector<std::string> tasks, std::string filename = "todo.txt");
+    std::vector<std::string> getTasks() const {
+        return tasks_vector;
+    }
+    void setTasks(const std::vector<std::string>& tasks) {
+        this->tasks_vector = tasks;
+    }
+    std::string getFilename() const {
+        return filename;
+    }
+    void setFilename(const std::string& filename) {
+        this->filename = filename;
+    }
+
+    // default "help" in the main so that it explains the commands by default
+    void run(const std::string& command);
 
 private:
     std::vector<std::string> tasks_vector; // we will be using this to store and manipulate the tasks

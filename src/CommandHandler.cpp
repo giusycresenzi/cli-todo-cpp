@@ -11,13 +11,15 @@ CommandHandler::~CommandHandler() {
     cout << "Tasks saved to " << filename << endl;
 }
 
-void CommandHandler::run(const string& command, vector<string> tasks, string filename) {
+void CommandHandler::run(const string& command) {
     string inputCommand = command;
     while (inputCommand != "exit") {
         if (inputCommand == "help") {
             displayHelp();
         } else if (inputCommand == "about") {
             displayAbout();
+        } else if (inputCommand == "list") {
+            displayTasks(tasks_vector);
         } else if (inputCommand == "add") {
             add();
         } else if (inputCommand == "delete") {
@@ -26,6 +28,7 @@ void CommandHandler::run(const string& command, vector<string> tasks, string fil
             done();
         } else if (inputCommand == "search") {
             vector<string> search_result = search();
+            displayTasks(search_result);
         } else if (inputCommand == "sort") {
             sort();
         } else {
@@ -34,7 +37,7 @@ void CommandHandler::run(const string& command, vector<string> tasks, string fil
         cout << "Enter command: ";
         getline(cin, inputCommand);
     }
-    saveTasks(filename, tasks);
+    saveTasks(filename, tasks_vector);
     cout << "Tasks saved to " << filename << endl;
     cout << "Exiting application. Goodbye!" << endl;
 }
@@ -42,6 +45,7 @@ void CommandHandler::run(const string& command, vector<string> tasks, string fil
 void CommandHandler::displayHelp() {
     cout << "Usage: todo [command] [options]" << endl;
     cout << "Commands:" << endl;
+    cout << "  list             Display all tasks" << endl;
     cout << "  add <task>       Add a new task" << endl;
     cout << "  delete           Delete a task by index or full name" << endl;
     cout << "  done             Mark a task as done by index or full name" << endl;
@@ -62,7 +66,7 @@ void CommandHandler::add() {
     string task;
     cout << "Enter task: ";
     getline(cin, task);
-    addTask(filename, task); // Assuming addTask is defined in todo.h
+    addTask(tasks_vector, task); // Assuming addTask is defined in todo.h
 }
 
 void CommandHandler::del() {
@@ -98,9 +102,11 @@ vector<string> CommandHandler::search() {
     string keyword;
     cout << "Enter keyword to search: ";
     getline(cin, keyword);
-    searchTasks(tasks_vector, keyword);
+    return searchTasks(tasks_vector, keyword);
 }
 
 void CommandHandler::sort() {
     sortTasksAlphabetic(tasks_vector);
+    cout << "Tasks sorted alphabetically." << endl;
+    displayTasks(tasks_vector); // Display sorted tasks
 }

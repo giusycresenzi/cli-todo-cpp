@@ -1,6 +1,7 @@
 #ifndef TODO_H
 #define TODO_H
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -18,7 +19,7 @@ void saveTasks(const string& filename, const vector<string>& tasks);
 // ALL THE FOLLOWING ACT ON THE VECTOR
 void displayTasks(const vector<string>& tasks);
 //add a new task from the command line
-void addTask(const string& filename, const string& task);
+void addTask(vector<string>& tasks, const string& task);
 void deleteTask(vector<string>& tasks, int taskNumber);
 void deleteTask(vector<string>& tasks, const string& task); // overload to delete by task name
 void markAsDone(vector<string>& tasks, int taskNumber);
