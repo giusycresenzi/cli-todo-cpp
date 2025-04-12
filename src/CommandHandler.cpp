@@ -1,69 +1,106 @@
-#include '/include/CommandHandler.h'
+#include "../include/CommandHandler.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 
 using namespace std;
 
-void displayHelp() {
+CommandHandler::~CommandHandler() {
+    // Save tasks to file when the CommandHandler object is destroyed
+    saveTasks(filename, tasks_vector);
+    cout << "Tasks saved to " << filename << endl;
+}
+
+void CommandHandler::handleCommands(const string& command, vector<string> tasks, string filename) {
+    string inputCommand = command;
+    while (inputCommand != "exit") {
+        if (inputCommand == "help") {
+            displayHelp();
+        } else if (inputCommand == "about") {
+            displayAbout();
+        } else if (inputCommand == "add") {
+            add();
+        } else if (inputCommand == "delete") {
+            del();
+        } else if (inputCommand == "done") {
+            done();
+        } else if (inputCommand == "search") {
+            vector<string> search_result = search();
+        } else if (inputCommand == "sort") {
+            sort();
+        } else {
+            cout << "Unknown command. Type 'help' for a list of commands." << endl;
+        }
+        cout << "Enter command: ";
+        getline(cin, inputCommand);
+    }
+    saveTasks(filename, tasks);
+    cout << "Tasks saved to " << filename << endl;
+    cout << "Exiting application. Goodbye!" << endl;
+}
+
+void CommandHandler::displayHelp() {
     cout << "Usage: todo [command] [options]" << endl;
     cout << "Commands:" << endl;
     cout << "  add <task>       Add a new task" << endl;
-    cout << "  delete <index>   Delete a task by index" << endl;
-    cout << "  done <index>     Mark a task as done" << endl;
-    cout << "  search <keyword> Search for tasks containing the keyword" << endl;
-    cout << "  filter <keyword> Filter tasks containing the keyword" << endl;
-    cout << "  sort            Sort tasks alphabetically" << endl;
-    cout << "  help            Display this help message" << endl;
+    cout << "  delete           Delete a task by index or full name" << endl;
+    cout << "  done             Mark a task as done by index or full name" << endl;
+    cout << "  search           Search for tasks containing the keyword" << endl;
+    cout << "  sort             Sort tasks alphabetically" << endl;
+    cout << "  help             Display this help message" << endl;
+    cout << "  about            Display information about the application" << endl;
+    cout << "  exit             Exit the application" << endl;
 }
-void displayAbout() {
+void CommandHandler::displayAbout() {
     cout << "Todo List Application" << endl;
     cout << "Version 1.0" << endl;
-    cout << "Author: Giuseppe Crescenzi" << endl;
+    cout << "Author: Giuseppe Crescenzi, giusycrescenzi on GitHub" << endl;
     cout << "Description: A simple command-line todo list application." << endl;
 }
-void addTask(vector<string>& tasks, const string& task) {
-    tasks.push_back(task);
-    cout << "Task added: " << task << endl;
+
+void CommandHandler::add() {
+    string task;
+    cout << "Enter task: ";
+    getline(cin, task);
+    addTask(filename, task); // Assuming addTask is defined in todo.h
 }
 
-void deleteTask(vector<string>& tasks, int index) {
-    if (index < 0 || index >= tasks.size()) {
-        cout << "Invalid index. Task not deleted." << endl;
-        return;
-    }
-    cout << "Task deleted: " << tasks[index] << endl;
-    tasks.erase(tasks.begin() + index);
-}
+void CommandHandler::del() {
+    string identifier;
+    cout << "Enter the task number or name to delete: ";
+    getline(cin, identifier);
 
-void markTaskDone(vector<string>& tasks, int index) {
-    if (index < 0 || index >= tasks.size()) {
-        cout << "Invalid index. Task not marked as done." << endl;
-        return;
-    }
-    tasks[index] += " [DONE]";
-    cout << "Task marked as done: " << tasks[index] << endl;
-}
-
-void searchTasks(const vector<string>& tasks, const string& keyword) {
-    cout << "Search results for \"" << keyword << "\":" << endl;
-    for (size_t i = 0; i < tasks.size(); ++i) {
-        if (tasks[i].find(keyword) != string::npos) {
-            cout << i << ": " << tasks[i] << endl;
-        }
+    // Check if the input is a number (index)
+    if (all_of(identifier.begin(), identifier.end(), ::isdigit)) {
+        // Input is a number, call deleteTask by index
+        int taskIndex = stoi(identifier);
+        deleteTask(tasks_vector, taskIndex);
+    } else {
+        // Input is a string, call deleteTask by task name
+        deleteTask(tasks_vector, identifier);
     }
 }
 
-void filterTasks(const vector<string>& tasks, const string& keyword) {
-    cout << "Filtered tasks containing \"" << keyword << "\":" << endl;
-    for (const auto& task : tasks) {
-        if (task.find(keyword) != string::npos) {
-            cout << task << endl;
-        }
+void CommandHandler::done() {
+    string identifier;
+    cout << "Enter the task number or name to mark as done: ";
+    getline(cin, identifier);
+    if (all_of(identifier.begin(), identifier.end(), ::isdigit)) {
+        int taskNumber = stoi(identifier);
+        markAsDone(tasks_vector, taskNumber);
+    } else {
+        markAsDone(tasks_vector, identifier);
     }
+    
 }
 
-void sortTasks(vector<string>& tasks) {
-    sort(tasks.begin(), tasks.end());
-    cout << "Tasks sorted alphabetically." << endl;
+vector<string> CommandHandler::search() {
+    string keyword;
+    cout << "Enter keyword to search: ";
+    getline(cin, keyword);
+    searchTasks(tasks_vector, keyword);
+}
+
+void CommandHandler::sort() {
+    sortTasksAlphabetic(tasks_vector);
 }

@@ -19,7 +19,7 @@ vector<string> loadTasks(const string& filename) {
         }
         file.close();
     } else {
-        cerr << "Error: Unable to open this file " << filename << endl;
+        cerr << "Error: Unable to open this file: " << filename << endl;
     }
     // Check how many tasks were loaded
     if (tasks.empty()) {
@@ -43,70 +43,58 @@ void saveTasks(const string& filename, const vector<string>& tasks) {
     }
 }
 void displayTasks(const vector<string>& tasks) {
-    cout << "Tasks:" << endl;
-    for (size_t i = 0; i < tasks.size(); ++i) {
-        cout << i + 1 << ". " << tasks[i] << endl;
+    cout << "Your tasks:" << endl;
+    for (size_t i = 0; i < tasks.size(); i++) {
+        cout << i + 1 << ") " << tasks[i] << endl;
     }
 }
-void addTask(const string& filename, const string& task) {
-    ofstream file(filename, ios::app);
-    if (file.is_open()) {
-        file << task << endl;
-        file.close();
-    } else {
-        cerr << "Error: Unable to open file " << filename << endl;
-    }
+void addTask(vector<string>& tasks, const string& task) {
+    tasks.push_back(task); // Add the task to the vector
+    cout << "Task added: " << task << endl;
 }
-void deleteTask(vector<string>& tasks, int taskIndex) {
+void deleteTask(vector<string>& tasks, int taskNumber) {
+    int taskIndex = taskNumber - 1; // Convert to zero-based index
     if (taskIndex >= 0 && taskIndex < tasks.size()) {
         tasks.erase(tasks.begin() + taskIndex);
     } else {
-        cerr << "Error: Invalid task index" << endl;
+        cerr << "Error: Invalid task number" << endl;
     }
 }
-void markAsDone(vector<string>& tasks, int taskIndex) {
+void deleteTask(vector<string>& tasks, const string& task) {
+    auto it = find(tasks.begin(), tasks.end(), task);
+    if (it != tasks.end()) {
+        tasks.erase(it);
+    } else {
+        cerr << "Error: Task not found" << endl;
+    }
+}
+void markAsDone(vector<string>& tasks, int taskNumber) {
+    int taskIndex = taskNumber - 1;
     if (taskIndex >= 0 && taskIndex < tasks.size()) {
         tasks[taskIndex] += " [done]";
     } else {
         cerr << "Error: Invalid task index" << endl;
     }
 }
+void markAsDone(vector<string>& tasks, const string& task) {
+    auto it = find(tasks.begin(), tasks.end(), task);
+    if (it != tasks.end()) {
+        *it += " [done]";
+    } else {
+        cerr << "Error: Task not found" << endl;
+    }
+}
 vector<string> searchTasks(const vector<string>& tasks, const string& keyword) {
     vector<string> results;
-    for (const auto& task : tasks) {
-        if (task.find(keyword) != string::npos) {
-            results.push_back(task);
+    for (size_t i = 0; i < tasks.size(); i++) {
+        if (tasks[i].find(keyword) != string::npos) {
+            results.push_back(tasks[i]);
         }
     }
     return results;
 }
-void sortTasks(vector<string>& tasks) {
+void sortTasksAlphabetic(vector<string>& tasks) {
     sort(tasks.begin(), tasks.end());
 }
-vector<string> filterTasks(const vector<string>& tasks, const string& keyword) {
-    vector<string> results;
-    for (const auto& task : tasks) {
-        if (task.find(keyword) != string::npos) {
-            results.push_back(task);
-        }
-    }
-    return results;
-}
-void displayHelp() {
-    cout << "Usage: todo [command] [options]" << endl;
-    cout << "Commands:" << endl;
-    cout << "  add <task>       Add a new task" << endl;
-    cout << "  delete <index>   Delete a task by index" << endl;
-    cout << "  done <index>     Mark a task as done" << endl;
-    cout << "  search <keyword> Search for tasks containing the keyword" << endl;
-    cout << "  filter <keyword> Filter tasks containing the keyword" << endl;
-    cout << "  sort            Sort tasks alphabetically" << endl;
-    cout << "  help            Display this help message" << endl;
-}
-void displayAbout() {
-    cout << "Todo List Application" << endl;
-    cout << "Version 1.0" << endl;
-    cout << "Author: Giuseppe Crescenzi" << endl;
-    cout << "Description: A simple command-line todo list application." << endl;
-}
+
 // this code is intended to be the implementation of a todo.h file, won't work on its own
