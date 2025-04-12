@@ -1,3 +1,0 @@
-/Users/giuseppecrescenzi/cli-todo-cpp/build/CMakeFiles/cli_todo_cpp.dir
-/Users/giuseppecrescenzi/cli-todo-cpp/build/CMakeFiles/edit_cache.dir
-/Users/giuseppecrescenzi/cli-todo-cpp/build/CMakeFiles/rebuild_cache.dir
